@@ -1,4 +1,3 @@
-# bookinfo-microservices-def.yml  (same, but default scheduler)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
