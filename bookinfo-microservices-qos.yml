@@ -1,0 +1,163 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productpage-{{.Replica}}-{{.Iteration}}
+  labels:
+    kube-burner-job: bookinfo-density
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: productpage
+      instance: "{{.Replica}}-{{.Iteration}}"
+  template:
+    metadata:
+      labels:
+        app: productpage
+        instance: "{{.Replica}}-{{.Iteration}}"
+    spec:
+      schedulerName: qos-scheduler
+      containers:
+        - name: productpage
+          image: docker.io/istio/examples-bookinfo-productpage-v1:1.19.1
+          ports:
+            - containerPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productpage-{{.Replica}}-{{.Iteration}}
+  labels:
+    kube-burner-job: bookinfo-density
+spec:
+  selector:
+    app: productpage
+    instance: "{{.Replica}}-{{.Iteration}}"
+  ports:
+    - name: http
+      port: 9080
+      targetPort: 9080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: details-{{.Replica}}-{{.Iteration}}
+  labels:
+    kube-burner-job: bookinfo-density
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: details
+      instance: "{{.Replica}}-{{.Iteration}}"
+  template:
+    metadata:
+      labels:
+        app: details
+        instance: "{{.Replica}}-{{.Iteration}}"
+    spec:
+      schedulerName: qos-scheduler
+      containers:
+        - name: details
+          image: docker.io/istio/examples-bookinfo-details-v1:1.19.1
+          ports:
+            - containerPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: details-{{.Replica}}-{{.Iteration}}
+  labels:
+    kube-burner-job: bookinfo-density
+spec:
+  selector:
+    app: details
+    instance: "{{.Replica}}-{{.Iteration}}"
+  ports:
+    - name: http
+      port: 9080
+      targetPort: 9080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviews-{{.Replica}}-{{.Iteration}}
+  labels:
+    kube-burner-job: bookinfo-density
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reviews
+      instance: "{{.Replica}}-{{.Iteration}}"
+  template:
+    metadata:
+      labels:
+        app: reviews
+        instance: "{{.Replica}}-{{.Iteration}}"
+    spec:
+      schedulerName: qos-scheduler
+      containers:
+        - name: reviews
+          image: docker.io/istio/examples-bookinfo-reviews-v1:1.19.1
+          ports:
+            - containerPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviews-{{.Replica}}-{{.Iteration}}
+  labels:
+    kube-burner-job: bookinfo-density
+spec:
+  selector:
+    app: reviews
+    instance: "{{.Replica}}-{{.Iteration}}"
+  ports:
+    - name: http
+      port: 9080
+      targetPort: 9080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ratings-{{.Replica}}-{{.Iteration}}
+  labels:
+    kube-burner-job: bookinfo-density
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ratings
+      instance: "{{.Replica}}-{{.Iteration}}"
+  template:
+    metadata:
+      labels:
+        app: ratings
+        instance: "{{.Replica}}-{{.Iteration}}"
+    spec:
+      schedulerName: qos-scheduler
+      containers:
+        - name: ratings
+          image: docker.io/istio/examples-bookinfo-ratings-v1:1.19.1
+          ports:
+            - containerPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ratings-{{.Replica}}-{{.Iteration}}
+  labels:
+    kube-burner-job: bookinfo-density
+spec:
+  selector:
+    app: ratings
+    instance: "{{.Replica}}-{{.Iteration}}"
+  ports:
+    - name: http
+      port: 9080
+      targetPort: 9080
+  type: ClusterIP
