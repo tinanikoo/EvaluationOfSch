@@ -1,0 +1,16 @@
+# kube-burner v1.17.7 style
+global:
+  measurements:
+    - name: podLatency
+
+jobs:
+  - name: bookinfo-density
+    jobIterations: ${JOB_ITERATIONS}
+    qps: ${QPS}
+    burst: ${BURST}
+    namespace: ${NAMESPACE}
+    cleanup: false
+
+    objects:
+      - objectTemplate: bookinfo-microservices.yml
+        replicas: ${BOOKINFO_REPLICAS}
