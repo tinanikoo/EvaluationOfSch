@@ -1,0 +1,22 @@
+# kubelet-density-heavy.bookinfo.template-cam.yaml
+global:
+  measurements:
+  - name: podLatency
+  - name: serviceLatency
+    svcTimeout: 30s
+
+jobs:
+- name: bookinfo-density-cam
+  jobType: create
+  jobIterations: ${JOB_ITERATIONS}
+  namespacedIterations: false
+  namespace: ${NAMESPACE}
+  cleanup: false
+  qps: ${QPS}
+  burst: ${BURST}
+  preLoadImages: false
+
+  objects:
+  - objectTemplate: ${OBJECT_TEMPLATE}
+    replicas: ${BOOKINFO_REPLICAS}
+    wait: false

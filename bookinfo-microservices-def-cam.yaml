@@ -1,0 +1,101 @@
+# bookinfo-microservices-def.yml
+apiVersion: codeco.he-codeco.eu/v1alpha1
+kind: CodecoApp
+metadata:
+  name: bookinfo-{{.Replica}}-{{.Iteration}}
+  namespace: kubelet-density-heavy
+spec:
+  appName: acm-swm-app
+  performanceProfile: Greenness
+  appEnergyLimit: "50"
+  appFailureTolerance: ""
+
+  codecoapp-msspec:
+
+  # ------------------------------------------------------
+  # Component 1: productpage
+  # ------------------------------------------------------
+  - podspec:
+      schedulerName: default-scheduler
+      containers:
+      - name: productpage
+        image: docker.io/istio/examples-bookinfo-productpage-v1:1.19.1
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+    serviceName: productpage-{{.Replica}}-{{.Iteration}}
+    serviceChannels:
+    - channelName: productpage-to-details
+      advancedChannelSettings:
+        minBandwidth: "1"
+        frameSize: "100"
+        maxDelay: "1000000"
+        sendInterval: "10"
+      otherService:
+        appName: acm-swm-app
+        serviceName: details-{{.Replica}}-{{.Iteration}}
+        port: 9080
+    - channelName: productpage-to-reviews
+      advancedChannelSettings:
+        minBandwidth: "1"
+        frameSize: "100"
+        maxDelay: "1000000"
+        sendInterval: "10"
+      otherService:
+        appName: acm-swm-app
+        serviceName: reviews-{{.Replica}}-{{.Iteration}}
+        port: 9080
+
+  # ------------------------------------------------------
+  # Component 2: details
+  # ------------------------------------------------------
+  - podspec:
+      schedulerName: default-scheduler
+      containers:
+      - name: details
+        image: docker.io/istio/examples-bookinfo-details-v1:1.19.1
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+    serviceName: details-{{.Replica}}-{{.Iteration}}
+
+  # ------------------------------------------------------
+  # Component 3: reviews
+  # ------------------------------------------------------
+  - podspec:
+      schedulerName: default-scheduler
+      containers:
+      - name: reviews
+        image: docker.io/istio/examples-bookinfo-reviews-v1:1.19.1
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+    serviceName: reviews-{{.Replica}}-{{.Iteration}}
+    serviceChannels:
+    - channelName: reviews-to-ratings
+      advancedChannelSettings:
+        minBandwidth: "1"
+        frameSize: "100"
+        maxDelay: "1000000"
+        sendInterval: "10"
+      otherService:
+        appName: acm-swm-app
+        serviceName: ratings-{{.Replica}}-{{.Iteration}}
+        port: 9080
+
+  # ------------------------------------------------------
+  # Component 4: ratings
+  # ------------------------------------------------------
+  - podspec:
+      schedulerName: default-scheduler
+      containers:
+      - name: ratings
+        image: docker.io/istio/examples-bookinfo-ratings-v1:1.19.1
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+    serviceName: ratings-{{.Replica}}-{{.Iteration}}
+
+  complianceClass: High
+  qosClass: Gold
+  securityClass: Good
