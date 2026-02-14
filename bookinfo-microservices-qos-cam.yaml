@@ -27,9 +27,9 @@ spec:
     serviceChannels:
     - channelName: productpage-to-details
       advancedChannelSettings:
-        minBandwidth: "1"
+        Bandwidth: "1"
         frameSize: "100"
-        maxDelay: "1000000"
+        maxDelay: "10s"
         sendInterval: "10"
       otherService:
         appName: acm-swm-app
@@ -37,9 +37,9 @@ spec:
         port: 9080
     - channelName: productpage-to-reviews
       advancedChannelSettings:
-        minBandwidth: "1"
+        Bandwidth: "1"
         frameSize: "100"
-        maxDelay: "1000000"
+        maxDelay: "10s"
         sendInterval: "10"
       otherService:
         appName: acm-swm-app
@@ -74,9 +74,9 @@ spec:
     serviceChannels:
     - channelName: reviews-to-ratings
       advancedChannelSettings:
-        minBandwidth: "1"
+        Bandwidth: "1"
         frameSize: "100"
-        maxDelay: "1000000"
+        maxDelay: "10s"
         sendInterval: "10"
       otherService:
         appName: acm-swm-app
