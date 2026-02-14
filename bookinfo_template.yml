@@ -1,0 +1,24 @@
+# kube-burner v1.17.7 style
+global:
+  measurements:
+    - name: podLatency
+
+jobs:
+  - name: kubelet-density-heavy
+    jobIterations: ${JOB_ITERATIONS}
+    qps: ${QPS}
+    burst: ${BURST}
+    namespacedIterations: false
+    namespace: kubelet-density-heavy
+    waitWhenFinished: true
+    preLoadImages: false
+    podWait: false
+
+    objects:
+      - objectTemplate: bookinfo-microservices.yml
+        replicas: ${BOOKINFO_REPLICAS}
+      
+      - objectTemplate: app-deployment.yml
+        replicas: ${BOOKINFO_REPLICAS}
+        inputVars:
+          readinessPeriod: 10
