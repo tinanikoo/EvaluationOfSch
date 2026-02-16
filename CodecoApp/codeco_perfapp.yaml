@@ -1,0 +1,84 @@
+apiVersion: codeco.he-codeco.eu/v1alpha1
+kind: CodecoApp
+metadata:
+  generation: 1
+  name: perfapp-pg-test
+  namespace: codeco-test
+  resourceVersion: "1456"
+  uid: 5c948d7e-43d6-425b-b0b2-76402b606e07
+spec:
+  appEnergyLimit: "20"
+  appFailureTolerance: ""
+  performanceProfile: Greenness
+  appName: codecoappinstance3-swmapp
+  codecoapp-msspec:
+  - podspec:
+      schedulerName: default-scheduler #qos-scheduler
+      containers:
+      - name: postgresql
+        image: registry.access.redhat.com/rhscl/postgresql-10-rhel7:latest
+        env:
+        - name: POSTGRESQL_USER
+          value: admin
+        - name: POSTGRESQL_PASSWORD
+          value: secret
+        - name: POSTGRESQL_DATABASE
+          value: kubelet-density
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+    serviceName: postgres-test
+    serviceChannels:
+    - channelName: perfapp-channel
+      advancedChannelSettings:
+        bandwidth: "1M"
+        frameSize: "100"
+        maxDelay: "10s"
+        sendInterval: "10"
+      otherService:
+        appName: acm-swm-app
+        serviceName: perfapp-test
+        port: 8080
+  - podspec:
+      schedulerName: default-scheduler #qos-scheduler
+      containers:
+      - name: perfapp
+        image: quay.io/cloud-bulldozer/perfapp:latest
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          periodSeconds: 60
+          failureThreshold: 1
+          timeoutSeconds: 60
+          initialDelaySeconds: 30
+        ports:
+        - containerPort: 8080
+        env:
+        - name: POSTGRESQL_USER
+          value: admin
+        - name: POSTGRESQL_PASSWORD
+          value: secret
+        - name: POSTGRESQL_DATABASE
+          value: kubelet-density
+        - name: POSTGRESQL_HOSTNAME
+          value: svc-db-channel
+        - name: POSTGRESQL_PORT
+          value: "5432"
+        - name: POSTGRESQL_RETRY_INTERVAL
+          value: "5"
+    serviceName: perfapp-test
+    serviceChannels:
+    - channelName: db-channel
+      advancedChannelSettings:
+        bandwidth: "1M"
+        frameSize: "100"
+        maxDelay: "10s"
+        sendInterval: "10"
+      otherService:
+        appName: acm-swm-app
+        serviceName: postgres-test
+        port: 5432
+  complianceClass: High
+  qosClass: Gold
+  securityClass: Good
