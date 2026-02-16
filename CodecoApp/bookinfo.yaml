@@ -1,0 +1,201 @@
+apiVersion: codeco.he-codeco.eu/v1alpha1
+kind: CodecoApp
+metadata:
+  name: codecoapp-bookinfo-fair
+  namespace: codeco-test
+spec:
+  appEnergyLimit: "50"
+  appFailureTolerance: ""
+  performanceProfile: Greenness
+  appName: acm-swm-app
+  codecoapp-msspec:
+  # ---- details ----
+  - podspec:
+      schedulerName: qos-scheduler
+      containers:
+      - name: details
+        image: docker.io/istio/examples-bookinfo-details-v1:1.20.3
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+    serviceChannels:
+    - advancedChannelSettings:
+        maxDelay: "10s"
+      channelName: productpage
+      otherService:
+        appName: acm-swm-app
+        serviceName: productpage
+        port: 9080
+    serviceName: details
+  # ---- ratings ----
+  - podspec:
+      schedulerName: qos-scheduler
+      containers:
+      - name: ratings
+        image: docker.io/istio/examples-bookinfo-ratings-v1:1.20.3
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+    serviceChannels: []
+    serviceName: ratings
+  # ---- reviews-v1 ----
+  - podspec:
+      schedulerName: qos-scheduler
+      containers:
+      - name: reviews
+        image: docker.io/istio/examples-bookinfo-reviews-v1:1.20.3
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+        env:
+        - name: LOG_DIR
+          value: "/tmp/logs"
+    serviceChannels:
+    - advancedChannelSettings:
+        maxDelay: "10s"
+      channelName: ratings
+      otherService:
+        appName: acm-swm-app
+        serviceName: ratings
+        port: 9080
+    serviceName: reviews-v1
+  # ---- reviews-v2 ----
+  - podspec:
+      schedulerName: qos-scheduler
+      containers:
+      - name: reviews
+        image: docker.io/istio/examples-bookinfo-reviews-v2:1.20.3
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+        env:
+        - name: LOG_DIR
+          value: "/tmp/logs"
+    serviceChannels:
+    - advancedChannelSettings:
+        maxDelay: "10s"
+      channelName: ratings
+      otherService:
+        appName: acm-swm-app
+        serviceName: ratings
+        port: 9080
+    serviceName: reviews-v2
+  # ---- reviews-v3 ----
+  - podspec:
+      schedulerName: qos-scheduler
+      containers:
+      - name: reviews
+        image: docker.io/istio/examples-bookinfo-reviews-v3:1.20.3
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+        env:
+        - name: LOG_DIR
+          value: "/tmp/logs"
+    serviceChannels:
+    - advancedChannelSettings:
+        maxDelay: "10s"
+      channelName: ratings
+      otherService:
+        appName: acm-swm-app
+        serviceName: ratings
+        port: 9080
+    serviceName: reviews-v3
+  # ---- productpage ----
+  - podspec:
+      schedulerName: qos-scheduler
+      containers:
+      - name: productpage
+        image: docker.io/istio/examples-bookinfo-productpage-v1:1.20.3
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+    serviceChannels:
+    - advancedChannelSettings:
+        maxDelay: "10s"
+      channelName: reviews
+      otherService:
+        appName: acm-swm-app
+        serviceName: reviews-v1
+        port: 9080
+    - advancedChannelSettings:
+        maxDelay: "10s"
+      channelName: details
+      otherService:
+        appName: acm-swm-app
+        serviceName: details
+        port: 9080
+    serviceName: productpage
+
+  complianceClass: High
+  qosClass: BestEffort
+  securityClass: Good
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productpage
+  namespace: he-codeco-acm
+  labels:
+    app: productpage
+    service: productpage
+spec:
+  ports:
+  - port: 9080
+    name: http
+    nodePort: 30000
+  type: NodePort
+  selector:
+    serviceName: productpage
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: details
+  namespace: he-codeco-acm
+  labels:
+    app: details
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    serviceName: details
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviews
+  namespace: he-codeco-acm
+  labels:
+    app: reviews
+    service: reviews
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: reviews
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ratings
+  namespace: he-codeco-acm
+  labels:
+    app: ratings
+    service: ratings
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    serviceName: ratings
