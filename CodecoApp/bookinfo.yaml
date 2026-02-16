@@ -11,7 +11,7 @@ spec:
   codecoapp-msspec:
   # ---- details ----
   - podspec:
-      schedulerName: qos-scheduler
+      schedulerName: default-scheduler #qos-scheduler
       containers:
       - name: details
         image: docker.io/istio/examples-bookinfo-details-v1:1.20.3
@@ -33,7 +33,7 @@ spec:
     serviceName: details
   # ---- ratings ----
   - podspec:
-      schedulerName: qos-scheduler
+      schedulerName: default-scheduler #qos-scheduler
       containers:
       - name: ratings
         image: docker.io/istio/examples-bookinfo-ratings-v1:1.20.3
@@ -44,7 +44,7 @@ spec:
     serviceName: ratings
   # ---- reviews-v1 ----
   - podspec:
-      schedulerName: qos-scheduler
+      schedulerName: default-scheduler #qos-scheduler
       containers:
       - name: reviews
         image: docker.io/istio/examples-bookinfo-reviews-v1:1.20.3
@@ -65,7 +65,7 @@ spec:
     serviceName: reviews-v1
   # ---- reviews-v2 ----
   - podspec:
-      schedulerName: qos-scheduler
+      schedulerName: default-scheduler #qos-scheduler
       containers:
       - name: reviews
         image: docker.io/istio/examples-bookinfo-reviews-v2:1.20.3
@@ -86,7 +86,7 @@ spec:
     serviceName: reviews-v2
   # ---- reviews-v3 ----
   - podspec:
-      schedulerName: qos-scheduler
+      schedulerName: default-scheduler #qos-scheduler
       containers:
       - name: reviews
         image: docker.io/istio/examples-bookinfo-reviews-v3:1.20.3
@@ -107,7 +107,7 @@ spec:
     serviceName: reviews-v3
   # ---- productpage ----
   - podspec:
-      schedulerName: qos-scheduler
+      schedulerName: default-scheduler #qos-scheduler
       containers:
       - name: productpage
         image: docker.io/istio/examples-bookinfo-productpage-v1:1.20.3
